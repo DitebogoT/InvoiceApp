@@ -1,0 +1,69 @@
+﻿@model IEnumerable<InvoiceApp.Models.Invoice>
+
+@{
+    ViewData["Title"] = "Invoices";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Invoices</h2>
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> New Invoice
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Invoice #</th>
+                        <th>Customer</th>
+                        <th>Date</th>
+                        <th>Due Date</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.InvoiceNumber</td>
+                            <td>@item.Customer.Name</td>
+                            <td>@item.InvoiceDate.ToShortDateString()</td>
+                            <td>@item.DueDate.ToShortDateString()</td>
+                            <td>$@item.Total.ToString("N2")</td>
+                            <td>
+                                <span class="badge bg-@GetStatusColor(item.Status)">
+                                    @item.Status
+                                </span>
+                            </td>
+                            <td>
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">View</a>
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Edit</a>
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@functions {
+    string GetStatusColor(InvoiceApp.Models.InvoiceStatus status)
+    {
+        return status switch
+        {
+            InvoiceApp.Models.InvoiceStatus.Draft => "secondary",
+            InvoiceApp.Models.InvoiceStatus.Sent => "primary",
+            InvoiceApp.Models.InvoiceStatus.Paid => "success",
+            InvoiceApp.Models.InvoiceStatus.Overdue => "danger",
+            InvoiceApp.Models.InvoiceStatus.Cancelled => "dark",
+            _ => "secondary"
+        };
+    }
+}

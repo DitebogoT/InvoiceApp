@@ -1,0 +1,201 @@
+﻿@model InvoiceApp.Models.Invoice
+
+@{
+    ViewData["Title"] = "Create Invoice";
+}
+
+<div class="container mt-4">
+    <h2>Create New Invoice</h2>
+
+    <form asp-action="Create" method="post" id="invoiceForm">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card mb-3">
+                    <div class="card-header">Invoice Information</div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label asp-for="InvoiceNumber" class="form-label"></label>
+                            <input asp-for="InvoiceNumber" class="form-control" readonly />
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="CustomerId" class="form-label">Customer</label>
+                            <select asp-for="CustomerId" class="form-select" asp-items="ViewBag.Customers">
+                                <option value="">-- Select Customer --</option>
+                            </select>
+                            <span asp-validation-for="CustomerId" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="InvoiceDate" class="form-label"></label>
+                            <input asp-for="InvoiceDate" type="date" class="form-control" />
+                            <span asp-validation-for="InvoiceDate" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="DueDate" class="form-label"></label>
+                            <input asp-for="DueDate" type="date" class="form-control" />
+                            <span asp-validation-for="DueDate" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="Status" class="form-label"></label>
+                            <select asp-for="Status" class="form-select" asp-items="Html.GetEnumSelectList<InvoiceApp.Models.InvoiceStatus>()"></select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card mb-3">
+                    <div class="card-header">Additional Details</div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label asp-for="TaxRate" class="form-label">Tax Rate (%)</label>
+                            <input asp-for="TaxRate" type="number" step="0.01" class="form-control" />
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="Discount" class="form-label">Discount ($)</label>
+                            <input asp-for="Discount" type="number" step="0.01" class="form-control" />
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="Notes" class="form-label"></label>
+                            <textarea asp-for="Notes" class="form-control" rows="4"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span>Invoice Items</span>
+                <button type="button" class="btn btn-sm btn-success" onclick="addItem()">
+                    <i class="bi bi-plus"></i> Add Item
+                </button>
+            </div>
+            <div class="card-body">
+                <table class="table" id="itemsTable">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Unit Price</th>
+                            <th>Total</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="itemsBody">
+                        <!-- Items will be added dynamically -->
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="3" class="text-end"><strong>Subtotal:</strong></td>
+                            <td><span id="subtotal">$0.00</span></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" class="text-end"><strong>Tax:</strong></td>
+                            <td><span id="tax">$0.00</span></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" class="text-end"><strong>Discount:</strong></td>
+                            <td><span id="discountAmount">$0.00</span></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" class="text-end"><strong>Total:</strong></td>
+                            <td><strong><span id="grandTotal">$0.00</span></strong></td>
+                            <td></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <button type="submit" class="btn btn-primary">Create Invoice</button>
+            <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        const products = @Html.Raw(Json.Serialize(ViewBag.Products));
+        let itemCount = 0;
+
+        function addItem() {
+            itemCount++;
+            const row = `
+                <tr id="item-${itemCount}">
+                    <td>
+                        <select name="productIds" class="form-select product-select" onchange="updatePrice(this, ${itemCount})" required>
+                            <option value="">-- Select Product --</option>
+                            ${products.map(p => `<option value="${p.id}" data-price="${p.price}">${p.name}</option>`).join('')}
+                        </select>
+                    </td>
+                    <td>
+                        <input type="number" name="quantities" class="form-control quantity-input" min="1" value="1" onchange="calculateTotals()" required />
+                    </td>
+                    <td>
+                        <input type="number" name="unitPrices" class="form-control price-input" step="0.01" min="0.01" value="0" onchange="calculateTotals()" required />
+                    </td>
+                    <td>
+                        <span class="item-total">$0.00</span>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-sm btn-danger" onclick="removeItem(${itemCount})">Remove</button>
+                    </td>
+                </tr>
+            `;
+            document.getElementById('itemsBody').insertAdjacentHTML('beforeend', row);
+        }
+
+        function removeItem(id) {
+            document.getElementById(`item-${id}`).remove();
+            calculateTotals();
+        }
+
+        function updatePrice(select, itemId) {
+            const selectedOption = select.options[select.selectedIndex];
+            const price = selectedOption.getAttribute('data-price');
+            const row = document.getElementById(`item-${itemId}`);
+            row.querySelector('.price-input').value = price;
+            calculateTotals();
+        }
+
+        function calculateTotals() {
+            const rows = document.querySelectorAll('#itemsBody tr');
+            let subtotal = 0;
+
+            rows.forEach(row => {
+                const quantity = parseFloat(row.querySelector('.quantity-input').value) || 0;
+                const price = parseFloat(row.querySelector('.price-input').value) || 0;
+                const total = quantity * price;
+                row.querySelector('.item-total').textContent = ' + total.toFixed(2);
+                subtotal += total;
+            });
+
+            const taxRate = parseFloat(document.querySelector('[name="TaxRate"]').value) || 0;
+            const discount = parseFloat(document.querySelector('[name="Discount"]').value) || 0;
+            const taxAmount = subtotal * (taxRate / 100);
+            const grandTotal = subtotal + taxAmount - discount;
+
+            document.getElementById('subtotal').textContent = ' + subtotal.toFixed(2);
+            document.getElementById('tax').textContent = ' + taxAmount.toFixed(2);
+            document.getElementById('discountAmount').textContent = ' + discount.toFixed(2);
+            document.getElementById('grandTotal').textContent = ' + grandTotal.toFixed(2);
+        }
+
+        // Recalculate when tax or discount changes
+        document.querySelector('[name="TaxRate"]').addEventListener('input', calculateTotals);
+        document.querySelector('[name="Discount"]').addEventListener('input', calculateTotals);
+
+        // Add first item on load
+        addItem();
+    </script>
+    }

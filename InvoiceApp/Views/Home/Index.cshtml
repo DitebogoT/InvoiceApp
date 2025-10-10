@@ -1,0 +1,120 @@
+﻿@model InvoiceApp.ViewModels.DashboardViewModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="container mt-4">
+    <h2>Dashboard</h2>
+
+    <div class="row mt-4">
+        <div class="col-md-3">
+            <div class="card text-white bg-primary mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Total Invoices</h5>
+                    <h2 class="card-text">@Model.TotalInvoices</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-success mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Total Revenue</h5>
+                    <h2 class="card-text">$@Model.TotalRevenue.ToString("N2")</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-info mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Paid Invoices</h5>
+                    <h2 class="card-text">@Model.PaidInvoices</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-danger mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Overdue</h5>
+                    <h2 class="card-text">@Model.OverdueInvoices</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Recent Invoices</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Invoice #</th>
+                                <th>Customer</th>
+                                <th>Date</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var invoice in Model.RecentInvoices)
+                            {
+                                <tr>
+                                    <td>@invoice.InvoiceNumber</td>
+                                    <td>@invoice.Customer.Name</td>
+                                    <td>@invoice.InvoiceDate.ToShortDateString()</td>
+                                    <td>$@invoice.Total.ToString("N2")</td>
+                                    <td>
+                                        <span class="badge bg-@GetStatusColor(invoice.Status)">
+                                            @invoice.Status
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <a asp-controller="Invoices" asp-action="Details" asp-route-id="@invoice.Id" class="btn btn-sm btn-info">View</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <a asp-controller="Invoices" asp-action="Create" class="btn btn-primary btn-lg w-100">
+                <i class="bi bi-plus-circle"></i> Create New Invoice
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a asp-controller="Customers" asp-action="Create" class="btn btn-success btn-lg w-100">
+                <i class="bi bi-person-plus"></i> Add Customer
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a asp-controller="Products" asp-action="Create" class="btn btn-info btn-lg w-100">
+                <i class="bi bi-box"></i> Add Product
+            </a>
+        </div>
+    </div>
+</div>
+
+@functions {
+    string GetStatusColor(InvoiceApp.Models.InvoiceStatus status)
+    {
+        return status switch
+        {
+            InvoiceApp.Models.InvoiceStatus.Draft => "secondary",
+            InvoiceApp.Models.InvoiceStatus.Sent => "primary",
+            InvoiceApp.Models.InvoiceStatus.Paid => "success",
+            InvoiceApp.Models.InvoiceStatus.Overdue => "danger",
+            InvoiceApp.Models.InvoiceStatus.Cancelled => "dark",
+            _ => "secondary"
+        };
+    }
+}
