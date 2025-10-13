@@ -35,9 +35,15 @@ namespace InvoiceApp.Data
 
             modelBuilder.Entity<InvoiceItem>()
                 .Property(ii => ii.UnitPrice)
-                .HasPrecision(18, 2); 
+                .HasPrecision(18, 2);
 
             // Configure relationships
+            modelBuilder.Entity<InvoiceItem>()
+                .HasOne(ii => ii.Invoice)
+                .WithMany(i => i.InvoiceItems) // FIXED: Ensure 'Invoice' type has 'InvoiceItems' navigation property
+                .HasForeignKey(ii => ii.InvoiceId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             modelBuilder.Entity<Invoice>()
                 .HasOne(i => i.Customer)
                 .WithMany(c => c.Invoices)
@@ -45,16 +51,13 @@ namespace InvoiceApp.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<InvoiceItem>()
-                .HasOne(ii => ii.Invoice)
-                .WithMany(i => i.InvoiceItems)
-                .HasForeignKey(ii => ii.InvoiceId)
-                .OnDelete(DeleteBehavior.Cascade); 
-
-            modelBuilder.Entity<InvoiceItem>()
                 .HasOne(ii => ii.Product)
-                .WithMany(p => p.InvoiceItems)
+                .WithMany(static p => p.InvoiceItems)
                 .HasForeignKey(ii => ii.ProductId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Invoice>().ToTable("Invoices");
+
 
             // Seed initial data
             SeedData(modelBuilder);

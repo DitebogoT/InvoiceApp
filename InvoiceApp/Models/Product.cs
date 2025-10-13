@@ -15,7 +15,6 @@ namespace InvoiceApp.Models
         [Required]
         [Range(0.01, double.MaxValue)]
         public decimal Price { get; set; }
-
-        public ICollection<InvoiceItem> InvoiceItems { get; set; }
+        public ICollection<InvoiceItem> InvoiceItems { get; set; } = new List<InvoiceItem>();
     }
 }
