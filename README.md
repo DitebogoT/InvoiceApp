@@ -7,11 +7,11 @@ A full-featured invoice management web application built with ASP.NET Core MVC a
 ![Bootstrap](https://img.shields.io/badge/Bootstrap-5.3-purple)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
-## 📋 Overview
+## Overview
 
 This Invoice Management System allows businesses to manage their invoicing workflow efficiently. Create invoices, manage customers and products, track payments, and maintain a complete history of transactions.
 
-## ✨ Features
+## Features
 
 - **Dashboard** - Real-time overview of invoices, revenue, and statistics
 - **Invoice Management** - Create, edit, view, and delete invoices
@@ -42,7 +42,7 @@ Before you begin, ensure you have the following installed:
 - [SQL Server](https://www.microsoft.com/en-us/sql-server/sql-server-downloads) (LocalDB, Express, or Full version)
 - [Git](https://git-scm.com/downloads) (optional, for cloning)
 
-## 🚀 Getting Started
+## Getting Started
 
 ### 1. Clone the Repository
 
@@ -109,7 +109,7 @@ The application will start at:
 - HTTPS: `https://localhost:5001`
 - HTTP: `http://localhost:5000`
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 InvoiceApp/
@@ -144,7 +144,7 @@ InvoiceApp/
 └── README.md            # This file
 ```
 
-## 🎯 Usage
+## Usage
 
 ### Creating an Invoice
 
@@ -171,7 +171,7 @@ InvoiceApp/
 3. Enter product name, description, and price
 4. Click **Create Product**
 
-## 📊 Database Schema
+## Database Schema
 
 ### Tables
 
@@ -209,7 +209,7 @@ private string GenerateInvoiceNumber()
 }
 ```
 
-## 🚀 Future Enhancements
+## Future Enhancements
 
 - [ ] PDF invoice generation
 - [ ] Email invoice functionality
@@ -257,7 +257,7 @@ dotnet ef database update
 
 **Solution**: Edit `Properties/launchSettings.json` and change the port numbers
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
@@ -267,26 +267,26 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## 📝 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 👨‍💻 Author
+## Author
 
 Your Name - [@yourhandle](https://twitter.com/yourhandle)
 
-Project Link: [https://github.com/yourusername/invoice-app](https://github.com/yourusername/invoice-app)
+Project Link: [https://github.com/DitebogoT/invoice-app](https://github.com/DitebogoT/invoice-app)
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - [ASP.NET Core Documentation](https://docs.microsoft.com/aspnet/core)
 - [Entity Framework Core Documentation](https://docs.microsoft.com/ef/core)
 - [Bootstrap](https://getbootstrap.com)
 - [Bootstrap Icons](https://icons.getbootstrap.com)
 
-## 📧 Support
+## Support
 
-For support, email support@example.com or open an issue in the repository.
+For support, email diditlhakola@.com or open an issue in the repository.
 
 ---
 
