@@ -2,8 +2,8 @@
 
 A full-featured invoice management web application built with ASP.NET Core MVC and Entity Framework Core.
 
-![ASP.NET Core](https://img.shields.io/badge/ASP.NET%20Core-6.0-blue)
-![Entity Framework](https://img.shields.io/badge/Entity%20Framework-6.0-purple)
+![ASP.NET Core](https://img.shields.io/badge/ASP.NET%20Core-8.0-blue)
+![Entity Framework](https://img.shields.io/badge/Entity%20Framework-8.0-purple)
 ![Bootstrap](https://img.shields.io/badge/Bootstrap-5.3-purple)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
