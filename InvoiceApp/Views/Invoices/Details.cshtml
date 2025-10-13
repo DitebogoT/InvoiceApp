@@ -1,5 +1,108 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿<!-- Views/Invoices/Details.cshtml -->
+@model InvoiceApp.Models.Invoice
+
 @{
+    ViewData["Title"] = "Invoice Details";
+}
+
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h4>Invoice: @Model.InvoiceNumber</h4>
+            <div>
+                <a asp-action="Edit" asp-route-id="@Model.InvoiceId" class="btn btn-warning">Edit</a>
+                <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <h5>Bill To:</h5>
+                    <p>
+                        <strong>@Model.Customer.Name</strong><br />
+                        @Model.Customer.Address<br />
+                        @Model.Customer.City, @Model.Customer.Country<br />
+                        Email: @Model.Customer.Email<br />
+                        Phone: @Model.Customer.Phone
+                    </p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <p>
+                        <strong>Invoice Date:</strong> @Model.InvoiceDate.ToShortDateString()<br />
+                        <strong>Due Date:</strong> @Model.DueDate.ToShortDateString()<br />
+                        <strong>Status:</strong>
+                        <span class="badge bg-@GetStatusColor(Model.Status)">@Model.Status</span>
+                    </p>
+                </div>
+            </div>
+
+            <table class="table table-bordered">
+                <thead class="table-light">
+                    <tr>
+                        <th>Product</th>
+                        <th>Description</th>
+                        <th class="text-center">Quantity</th>
+                        <th class="text-end">Unit Price</th>
+                        <th class="text-end">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.InvoiceItems)
+                    {
+                        <tr>
+                            <td>@item.Product.Name</td>
+                            <td>@item.Product.Description</td>
+                            <td class="text-center">@item.Quantity</td>
+                            <td class="text-end">$@item.UnitPrice.ToString("N2")</td>
+                            <td class="text-end">$@item.Total.ToString("N2")</td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="4" class="text-end"><strong>Subtotal:</strong></td>
+                        <td class="text-end">$@Model.SubTotal.ToString("N2")</td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" class="text-end"><strong>Tax (@Model.TaxRate%):</strong></td>
+                        <td class="text-end">$@Model.TaxAmount.ToString("N2")</td>
+                    </tr>
+                    @if (Model.Discount > 0)
+                    {
+                        <tr>
+                            <td colspan="4" class="text-end"><strong>Discount:</strong></td>
+                            <td class="text-end">-$@Model.Discount.ToString("N2")</td>
+                        </tr>
+                    }
+                    <tr class="table-active">
+                        <td colspan="4" class="text-end"><strong>Grand Total:</strong></td>
+                        <td class="text-end"><strong>$@Model.Total.ToString("N2")</strong></td>
+                    </tr>
+                </tfoot>
+            </table>
+
+            @if (!string.IsNullOrEmpty(Model.Notes))
+            {
+                <div class="mt-3">
+                    <h5>Notes:</h5>
+                    <p>@Model.Notes</p>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@functions {
+    string GetStatusColor(InvoiceApp.Models.InvoiceStatus status)
+    {
+        return status switch
+        {
+            InvoiceApp.Models.InvoiceStatus.Draft => "secondary",
+            InvoiceApp.Models.InvoiceStatus.Sent => "primary",
+            InvoiceApp.Models.InvoiceStatus.Paid => "success",
+            InvoiceApp.Models.InvoiceStatus.Overdue => "danger",
+            InvoiceApp.Models.InvoiceStatus.Cancelled => "dark",
+            _ => "secondary"
+        };
+    }
 }
