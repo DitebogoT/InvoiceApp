@@ -176,7 +176,7 @@
                 const quantity = parseFloat(row.querySelector('.quantity-input').value) || 0;
                 const price = parseFloat(row.querySelector('.price-input').value) || 0;
                 const total = quantity * price;
-                row.querySelector('.item-total').textContent = ' + total.toFixed(2);
+                row.querySelector('.item-total').textContent = ' + total.toFixed(2)';
                 subtotal += total;
             });
 
@@ -185,10 +185,10 @@
             const taxAmount = subtotal * (taxRate / 100);
             const grandTotal = subtotal + taxAmount - discount;
 
-            document.getElementById('subtotal').textContent = ' + subtotal.toFixed(2);
-            document.getElementById('tax').textContent = ' + taxAmount.toFixed(2);
-            document.getElementById('discountAmount').textContent = ' + discount.toFixed(2);
-            document.getElementById('grandTotal').textContent = ' + grandTotal.toFixed(2);
+            document.getElementById('subtotal').textContent = ' + subtotal.toFixed(2)';
+            document.getElementById('tax').textContent = ' + taxAmount.toFixed(2)';
+            document.getElementById('discountAmount').textContent = ' + discount.toFixed(2)';
+            document.getElementById('grandTotal').textContent = ' + grandTotal.toFixed(2)';
         }
 
         // Recalculate when tax or discount changes

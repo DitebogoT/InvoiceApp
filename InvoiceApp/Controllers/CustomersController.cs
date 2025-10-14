@@ -2,9 +2,11 @@
 using Microsoft.EntityFrameworkCore;
 using InvoiceApp.Data;
 using InvoiceApp.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace InvoiceApp.Controllers
 {
+    [Authorize]
     public class CustomersController : Controller
     {
         private readonly ApplicationDbContext _context;

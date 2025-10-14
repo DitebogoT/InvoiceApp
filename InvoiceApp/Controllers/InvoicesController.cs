@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using InvoiceApp.Data;
 using InvoiceApp.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace InvoiceApp.Controllers
 {
+    [Authorize]
     public class InvoicesController : Controller
     {
         private readonly ApplicationDbContext _context;
