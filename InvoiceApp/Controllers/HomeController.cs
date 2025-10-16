@@ -1,8 +1,10 @@
-using InvoiceApp.Models;
+// Controllers/HomeController.cs
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using InvoiceApp.Data;
 using InvoiceApp.ViewModels;
+using InvoiceApp.Models;
 
 namespace InvoiceApp.Controllers
 {
@@ -15,35 +17,41 @@ namespace InvoiceApp.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index()
+        // Landing page - accessible to everyone
+        public IActionResult Index()
         {
-            var invoices = await _context.Invoices
-                .Include(i => i.Customer)
-                .ToListAsync();
 
+            // If user is already logged in, redirect to dashboard
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction(nameof(Dashboard));
+            }
+
+            return View();
+        }
+
+        // Dashboard - requires authentication
+        [Authorize]
+        public async Task<IActionResult> Dashboard()
+        {
             var viewModel = new DashboardViewModel
             {
-                TotalInvoices = invoices.Count,
-
-                // Sum Total only for paid invoices (runs in memory)
-                TotalRevenue = invoices
+                TotalInvoices = await _context.Invoices.CountAsync(),
+                TotalRevenue = await _context.Invoices
                     .Where(i => i.Status == InvoiceStatus.Paid)
-                    .Sum(i => i.Total),
-
-                PaidInvoices = invoices.Count(i => i.Status == InvoiceStatus.Paid),
-                OverdueInvoices = invoices.Count(i => i.Status == InvoiceStatus.Overdue),
-
-                // Get recent invoices sorted by date
-                RecentInvoices = invoices
+                    .SumAsync(i => i.Total),
+                PaidInvoices = await _context.Invoices
+                    .CountAsync(i => i.Status == InvoiceStatus.Paid),
+                OverdueInvoices = await _context.Invoices
+                    .CountAsync(i => i.Status == InvoiceStatus.Overdue),
+                RecentInvoices = await _context.Invoices
+                    .Include(i => i.Customer)
                     .OrderByDescending(i => i.InvoiceDate)
                     .Take(5)
-                    .ToList()
+                    .ToListAsync()
             };
-
 
             return View(viewModel);
         }
-
-
     }
 }
