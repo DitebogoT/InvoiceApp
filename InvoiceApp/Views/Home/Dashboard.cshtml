@@ -1,0 +1,265 @@
+﻿<!-- Views/Home/Dashboard.cshtml -->
+@model InvoiceApp.ViewModels.DashboardViewModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="bi bi-speedometer2"></i> Dashboard</h2>
+        <a asp-controller="Invoices" asp-action="Create" class="btn btn-violet">
+            <i class="bi bi-plus-circle"></i> Create Invoice
+        </a>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row mt-4">
+        <div class="col-md-3">
+            <div class="card dashboard-card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-1">Total Invoices</p>
+                            <h2 class="mb-0 fw-bold">@Model.TotalInvoices</h2>
+                        </div>
+                        <div class="stat-icon bg-violet-light">
+                            <i class="bi bi-receipt text-violet"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card dashboard-card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-1">Total Revenue</p>
+                            <h2 class="mb-0 fw-bold text-success">$@Model.TotalRevenue.ToString("N2")</h2>
+                        </div>
+                        <div class="stat-icon bg-success-light">
+                            <i class="bi bi-currency-dollar text-success"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card dashboard-card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-1">Paid Invoices</p>
+                            <h2 class="mb-0 fw-bold text-info">@Model.PaidInvoices</h2>
+                        </div>
+                        <div class="stat-icon bg-info-light">
+                            <i class="bi bi-check-circle text-info"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card dashboard-card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-1">Overdue</p>
+                            <h2 class="mb-0 fw-bold text-danger">@Model.OverdueInvoices</h2>
+                        </div>
+                        <div class="stat-icon bg-danger-light">
+                            <i class="bi bi-exclamation-triangle text-danger"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <a asp-controller="Invoices" asp-action="Create" class="card quick-action-card border-0 shadow-sm text-decoration-none h-100">
+                <div class="card-body text-center p-4">
+                    <i class="bi bi-file-earmark-plus fs-1 text-violet mb-3 d-block"></i>
+                    <h5 class="text-dark">Create Invoice</h5>
+                    <p class="text-muted mb-0">Generate a new invoice</p>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-4">
+            <a asp-controller="Customers" asp-action="Create" class="card quick-action-card border-0 shadow-sm text-decoration-none h-100">
+                <div class="card-body text-center p-4">
+                    <i class="bi bi-person-plus fs-1 text-violet mb-3 d-block"></i>
+                    <h5 class="text-dark">Add Customer</h5>
+                    <p class="text-muted mb-0">Register new customer</p>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-4">
+            <a asp-controller="Products" asp-action="Create" class="card quick-action-card border-0 shadow-sm text-decoration-none h-100">
+                <div class="card-body text-center p-4">
+                    <i class="bi bi-box-seam fs-1 text-violet mb-3 d-block"></i>
+                    <h5 class="text-dark">Add Product</h5>
+                    <p class="text-muted mb-0">Create new product/service</p>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Recent Invoices -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center py-3">
+                    <h5 class="mb-0"><i class="bi bi-clock-history"></i> Recent Invoices</h5>
+                    <a asp-controller="Invoices" asp-action="Index" class="btn btn-sm btn-outline-violet">
+                        View All <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+                <div class="card-body p-0">
+                    @if (Model.RecentInvoices.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th class="border-0">Invoice #</th>
+                                        <th class="border-0">Customer</th>
+                                        <th class="border-0">Date</th>
+                                        <th class="border-0">Amount</th>
+                                        <th class="border-0">Status</th>
+                                        <th class="border-0">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var invoice in Model.RecentInvoices)
+                                    {
+                                        <tr>
+                                            <td class="fw-bold">@invoice.InvoiceNumber</td>
+                                            <td>@invoice.Customer.Name</td>
+                                            <td>@invoice.InvoiceDate.ToShortDateString()</td>
+                                            <td class="fw-bold">$@invoice.Total.ToString("N2")</td>
+                                            <td>
+                                                <span class="badge bg-@GetStatusColor(invoice.Status)">
+                                                    @invoice.Status
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <a asp-controller="Invoices" asp-action="Details" asp-route-id="@invoice.InvoiceId"
+                                                   class="btn btn-sm btn-violet">
+                                                    <i class="bi bi-eye"></i> View
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-5">
+                            <i class="bi bi-inbox fs-1 text-muted d-block mb-3"></i>
+                            <p class="text-muted">No invoices yet. Create your first invoice to get started!</p>
+                            <a asp-controller="Invoices" asp-action="Create" class="btn btn-violet">
+                                <i class="bi bi-plus-circle"></i> Create Invoice
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@functions {
+    string GetStatusColor(InvoiceApp.Models.InvoiceStatus status)
+    {
+        return status switch
+        {
+            InvoiceApp.Models.InvoiceStatus.Draft => "secondary",
+            InvoiceApp.Models.InvoiceStatus.Sent => "primary",
+            InvoiceApp.Models.InvoiceStatus.Paid => "success",
+            InvoiceApp.Models.InvoiceStatus.Overdue => "danger",
+            InvoiceApp.Models.InvoiceStatus.Cancelled => "dark",
+            _ => "secondary"
+        };
+    }
+}
+
+<style>
+    .dashboard-card {
+        transition: transform 0.2s ease;
+    }
+
+    .dashboard-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .stat-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+    }
+
+    .bg-violet-light {
+        background-color: #f5f3ff;
+    }
+
+    .bg-success-light {
+        background-color: #f0fdf4;
+    }
+
+    .bg-info-light {
+        background-color: #f0f9ff;
+    }
+
+    .bg-danger-light {
+        background-color: #fef2f2;
+    }
+
+    .quick-action-card {
+        transition: all 0.3s ease;
+    }
+
+    .quick-action-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(124, 58, 237, 0.15) !important;
+    }
+
+    .btn-violet {
+        background: #7c3aed;
+        color: white;
+        border: none;
+    }
+
+    .btn-violet:hover {
+        background: #5b21b6;
+        color: white;
+    }
+
+    .btn-outline-violet {
+        border: 1px solid #7c3aed;
+        color: #7c3aed;
+    }
+
+    .btn-outline-violet:hover {
+        background: #7c3aed;
+        color: white;
+    }
+
+    .text-violet {
+        color: #7c3aed;
+    }
+</style>
