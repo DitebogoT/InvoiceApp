@@ -126,14 +126,19 @@ InvoiceApp/
 │   ├── InvoiceItem.cs
 │   ├── InvoiceStatus.cs
 │   └── Product.cs
+├── Services/              #Email Service Configuration
+|   ├── EmailServices.cs/
+|   ├── IEmailServices.cs/
 ├── ViewModels/            # View Models
 │   ├── InvoiceViewModel.cs
+|   ├── AccountViewModels.cs
 │   └── DashboardViewModel.cs
 ├── Views/                 # Razor Views
 │   ├── Home/
 │   ├── Invoices/
 │   ├── Customers/
 │   ├── Products/
+|   ├── Account/
 │   └── Shared/
 ├── wwwroot/              # Static Files
 │   ├── css/
