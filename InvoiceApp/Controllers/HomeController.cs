@@ -34,24 +34,31 @@ namespace InvoiceApp.Controllers
         [Authorize]
         public async Task<IActionResult> Dashboard()
         {
+            // Load all invoices with related data needed for calculations
+            var invoices = await _context.Invoices
+                .Include(i => i.Customer)
+                .Include(i => i.InvoiceItems)
+                .ToListAsync();
+
             var viewModel = new DashboardViewModel
             {
-                TotalInvoices = await _context.Invoices.CountAsync(),
-                TotalRevenue = await _context.Invoices
+                TotalInvoices = invoices.Count,
+                TotalRevenue = invoices
                     .Where(i => i.Status == InvoiceStatus.Paid)
-                    .SumAsync(i => i.Total),
-                PaidInvoices = await _context.Invoices
-                    .CountAsync(i => i.Status == InvoiceStatus.Paid),
-                OverdueInvoices = await _context.Invoices
-                    .CountAsync(i => i.Status == InvoiceStatus.Overdue),
-                RecentInvoices = await _context.Invoices
-                    .Include(i => i.Customer)
+                    .Sum(i => i.Total), // Now works in memory
+                PaidInvoices = invoices
+                    .Count(i => i.Status == InvoiceStatus.Paid),
+                OverdueInvoices = invoices
+                    .Count(i => i.Status == InvoiceStatus.Overdue),
+                RecentInvoices = invoices
                     .OrderByDescending(i => i.InvoiceDate)
                     .Take(5)
-                    .ToListAsync()
+                    .ToList()
             };
 
             return View(viewModel);
+
+           // return View(viewModel);
         }
     }
 }
