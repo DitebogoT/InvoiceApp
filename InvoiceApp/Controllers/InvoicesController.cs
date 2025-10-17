@@ -91,6 +91,7 @@ namespace InvoiceApp.Controllers
 
             ViewBag.Customers = new SelectList(_context.Customers, "Id", "Name", invoice.CustomerId);
             ViewBag.Products = _context.Products.ToList();
+
             return View(invoice);
         }
 
