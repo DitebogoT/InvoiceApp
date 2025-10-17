@@ -1,0 +1,120 @@
+﻿<!-- Views/Customers/Details.cshtml -->
+@model InvoiceApp.Models.Customer
+
+@{
+    ViewData["Title"] = "Customer Details";
+}
+
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h4><i class="bi bi-person-circle"></i> Customer Details</h4>
+            <div>
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
+                    <i class="bi bi-pencil"></i> Edit
+                </a>
+                <a asp-action="Index" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Back to List
+                </a>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Contact Information</h5>
+                    <table class="table table-borderless">
+                        <tr>
+                            <th style="width: 150px;">Name:</th>
+                            <td><strong>@Model.Name</strong></td>
+                        </tr>
+                        <tr>
+                            <th>Email:</th>
+                            <td><a href="mailto:@Model.Email">@Model.Email</a></td>
+                        </tr>
+                        <tr>
+                            <th>Phone:</th>
+                            <td>@Model.Phone</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="col-md-6">
+                    <h5>Address</h5>
+                    <table class="table table-borderless">
+                        <tr>
+                            <th style="width: 150px;">Street:</th>
+                            <td>@Model.Address</td>
+                        </tr>
+                        <tr>
+                            <th>City:</th>
+                            <td>@Model.City</td>
+                        </tr>
+                        <tr>
+                            <th>Country:</th>
+                            <td>@Model.Country</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            @if (Model.Invoices != null && Model.Invoices.Any())
+            {
+                <hr />
+                <h5 class="mt-4">Invoices</h5>
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Invoice #</th>
+                            <th>Date</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var invoice in Model.Invoices)
+                        {
+                            <tr>
+                                <td>@invoice.InvoiceNumber</td>
+                                <td>@invoice.InvoiceDate.ToShortDateString()</td>
+                                <td>$@invoice.Total.ToString("N2")</td>
+                                <td>
+                                    <span class="badge bg-@GetStatusColor(invoice.Status)">
+                                        @invoice.Status
+                                    </span>
+                                </td>
+                                <td>
+                                    <a asp-controller="Invoices" asp-action="Details" asp-route-id="@invoice.InvoiceId"
+                                       class="btn btn-sm btn-info">
+                                        <i class="bi bi-eye"></i> View
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <hr />
+                <div class="alert alert-info mt-3">
+                    <i class="bi bi-info-circle"></i> No invoices for this customer yet.
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@functions {
+    string GetStatusColor(InvoiceApp.Models.InvoiceStatus status)
+    {
+        return status switch
+        {
+            InvoiceApp.Models.InvoiceStatus.Draft => "secondary",
+            InvoiceApp.Models.InvoiceStatus.Sent => "primary",
+            InvoiceApp.Models.InvoiceStatus.Paid => "success",
+            InvoiceApp.Models.InvoiceStatus.Overdue => "danger",
+            InvoiceApp.Models.InvoiceStatus.Cancelled => "dark",
+            _ => "secondary"
+        };
+    }
+}
