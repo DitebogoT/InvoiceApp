@@ -1,6 +1,7 @@
 # Invoice Management System
 
 A full-featured invoice management web application built with ASP.NET Core MVC and Entity Framework Core.
+NB: This application is still in production. I started it on the 13th of October 25
 
 ![ASP.NET Core](https://img.shields.io/badge/ASP.NET%20Core-8.0-blue)
 ![Entity Framework](https://img.shields.io/badge/Entity%20Framework-8.0-purple)
