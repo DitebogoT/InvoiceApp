@@ -122,11 +122,11 @@ namespace InvoiceApp.Controllers
             {
                 try
                 {
-                    // Remove existing items
+                    // Removes existing items
                     var existingItems = _context.InvoiceItems.Where(ii => ii.InvoiceId == id);
                     _context.InvoiceItems.RemoveRange(existingItems);
 
-                    // Add updated items
+                    // Adds updated items
                     for (int i = 0; i < productIds.Count; i++)
                     {
                         if (quantities[i] > 0)
